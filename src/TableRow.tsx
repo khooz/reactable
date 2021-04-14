@@ -1,10 +1,9 @@
-import { isString } from "lodash";
 import * as React from "react";
 import { ERenderType, IColumnDefinition } from "./@types/column";
 import { IRow } from "./@types/row";
-import TableCol from "./TableCol";
+import TD from "./TableCol";
 
-const TableRow = ({
+const TR = ({
 	clickable = false
 	, onClick = (e : React.MouseEvent, c, r) => {}
 	, children = {}
@@ -25,7 +24,7 @@ const TableRow = ({
 		{
 			tmp = co.map((i : any, x : number) => {
 				let rawContent : any;
-				let column = isString(i) ? i : (i?.name) ? i?.name : x;
+				let column = typeof i === 'string' ? i : (i?.name) ? i?.name : x;
 				rawContent = d?.[column] ?? "INVALID_PATH";
 				let colSplit = (""+column).split(".");
 				if (colSplit.length > 1)
@@ -43,14 +42,14 @@ const TableRow = ({
 				}
 				let contentStr = (i?.render ? i?.render(rawContent, d, ERenderType.DISPLAY) : rawContent);
 				return (
-					<TableCol
+					<TD
 						key={ x }
 						data={ rawContent }
 						column={ i }
 						onClick={ (e : React.MouseEvent, c : any = undefined) => onClick(e, c, children) }
 					>
 						{ contentStr }
-					</TableCol>
+					</TD>
 				);
 			});
 		}
@@ -74,4 +73,4 @@ const TableRow = ({
 	);
 };
 
-export default TableRow;
+export default TR;

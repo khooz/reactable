@@ -7,7 +7,7 @@ export const isIColumnSorting : CIsOfType = (variable : unknown): variable is IC
     return ("order" in (variable as IColumnSorting)) || ("priority" in (variable as IColumnSorting));
 }
 
-const TableCol = ({
+const TD = ({
 	data = null
 	, column = {}
 	, onClick = (e : React.MouseEvent, c : any) => {}
@@ -42,4 +42,4 @@ const TableCol = ({
 	}
 };
 
-export default TableCol;
+export default TD;

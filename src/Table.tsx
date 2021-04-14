@@ -1,7 +1,3 @@
-import {
-	isEmpty,
-	isString,
-} from 'lodash';
 import * as React from 'react';
 import {
 	Button
@@ -11,27 +7,11 @@ import {
 	, Table as ReactTable
 } from 'reactstrap';
 import CreatableSelect from 'react-select/creatable';
-import TableRow from "./TableRow";
+import TR from "./TableRow";
 import QueryString from "qs";
-import Axios from 'axios';
 import { ERenderType, IColumnDefinition, IColumnSorting, IFetchRequest, IHALResponse, ISelectOption, IStringKeysObject, ITableProps } from "./@types/index";
 import { IdentityFunction, targetAwareSort } from './helpers';
 import { isIColumnSorting } from './TableCol';
-
-const defaultITableProps : ITableProps = {
-	searchable: false
-	, clickable: false
-	, pageable: false
-	, resource: null
-	, className: ""
-	, style: {} as CSSStyleDeclaration
-	, columns: []
-	, pageSizes: [ 5, 10, 25, 50]
-	, loadingBar: React.useRef<React.Component>(null)
-	, axios: null
-	, onRowClick: (event : React.MouseEvent, column : any, row : object | any[], table : (object | any[])[]) => {}
-	, children: null
-}
 
 const Table = ({
 	searchable = false
@@ -65,14 +45,14 @@ const Table = ({
 	let renderBody = React.useCallback((d) => {
 		return d?.map((i : any, x: number) => {
 			return (
-				<TableRow
+				<TR
 					key={ x }
 					columns={ targetAwareColumns }
 					onClick={ (e, c = undefined, r = undefined) => onRowClick(e, c, r, d) }
 					clickable={ clickable }
 				>
 					{ i }
-				</TableRow>
+				</TR>
 			);
 		});
 	}, []);
@@ -318,7 +298,7 @@ const Table = ({
 				});
 				const response = await axios.request({
 					method: 'get',
-					url: isEmpty(query) ? `/${resource_name}` : `/${resource_name}/search/omni`,
+					url: Object.keys(query).length < 1 ? `/${resource_name}` : `/${resource_name}/search/omni`,
 					params: params
 				});
 				return response;
@@ -433,7 +413,7 @@ const Table = ({
 			result = result?.filter?.((i : any) => {
 				return targetAwareColumns.reduce((prev, cur, idx) => {
 					let rawContent : any;
-					let column = isString(cur) ? cur as string : (cur?.name) ? cur?.name : idx;
+					let column = typeof cur === 'string' ? cur as string : (cur?.name) ? cur?.name : idx;
 					rawContent = i?.[column] ?? "INVALID_PATH";
 					let colSplit = (""+column).split(".");
 					if (colSplit.length > 1)
